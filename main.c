@@ -1,5 +1,7 @@
 #include "httpd.h"
+#include <stdlib.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #define CHUNK_SIZE 1024 // read 1024 bytes at a time
 
@@ -8,9 +10,19 @@
 #define INDEX_HTML "/index.html"
 #define NOT_FOUND_HTML "/404.html"
 
+char *hostname = 0;
+
+
 int main(int c, char **v) {
+  hostname = malloc(255);
+  if (gethostname(hostname, 255) < 0) {
+    snprintf(hostname, 255, "<unknown>");
+  }
+
   char *port = c == 1 ? "8000" : v[1];
   serve_forever(port);
+
+  free(hostname);
   return 0;
 }
 
@@ -52,7 +64,7 @@ void route() {
     if (file_exists(index_html)) {
       read_file(index_html);
     } else {
-      printf("Hello! You are using %s\n\n", request_header("User-Agent"));
+      printf("Hello! You reached %s\n\n", hostname);
 
       printf("List of request headers:\n\n");
       header_t *h = request_headers();
