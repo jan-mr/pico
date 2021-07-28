@@ -53,18 +53,13 @@ void route() {
       read_file(index_html);
     } else {
       printf("Hello! You are using %s\n\n", request_header("User-Agent"));
-    }
-  }
 
-  GET("/test") {
-    HTTP_200;
-    printf("List of request headers:\n\n");
-
-    header_t *h = request_headers();
-
-    while (h->name) {
-      printf("%s: %s\n", h->name, h->value);
-      h++;
+      printf("List of request headers:\n\n");
+      header_t *h = request_headers();
+      while (h->name) {
+        printf("%s: %s\n", h->name, h->value);
+        h++;
+      }
     }
   }
 
